@@ -1,4 +1,7 @@
-We first load the data from a CSV file. Stata automatically accounts for and trims missing values, so no data cleanup or arrangement is necessary. We then perform regressions with no time-lagged variables, using the “outreg2” command to translate the direct outputs into a format that can be more easily understood and visualized.
+We first load the data from a CSV file. 
+Stata automatically accounts for and trims missing values, so no data cleanup or arrangement is necessary.
+We then perform regressions with no time-lagged variables.
+The “outreg2” command translated the direct outputs into a format that can be more easily understood and visualized.
 
 import delimited C:/Users/vms784/Desktop/completedata.csv, asfloat
 regress gdpreal time timesq nasarad nasanonrad dempres demhouse demsenate sework defrad nsfrad otherrad
