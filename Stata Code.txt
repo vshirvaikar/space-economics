@@ -1,0 +1,44 @@
+We first load the data from a CSV file. Stata automatically accounts for and trims missing values, so no data cleanup or arrangement is necessary. We then perform regressions with no time-lagged variables, using the “outreg2” command to translate the direct outputs into a format that can be more easily understood and visualized.
+
+import delimited C:/Users/vms784/Desktop/completedata.csv, asfloat
+regress gdpreal time timesq nasarad nasanonrad dempres demhouse demsenate sework defrad nsfrad otherrad
+outreg2 using myreg.doc, replace ctitle(Model 1) label
+regress lpaero time timesq nasarad nasanonrad dempres demhouse demsenate sework defrad nsfrad otherrad
+outreg2 using myreg.doc, append ctitle(Model 2) label
+regress lpair time timesq nasarad nasanonrad dempres demhouse demsenate sework defrad nsfrad otherrad
+outreg2 using myreg.doc, append ctitle(Model 3) label
+regress lpeng time timesq nasarad nasanonrad dempres demhouse demsenate sework defrad nsfrad otherrad
+outreg2 using myreg.doc, append ctitle(Model 4) label
+regress nasdaq time timesq nasarad nasanonrad dempres demhouse demsenate sework defrad nsfrad otherrad
+outreg2 using myreg.doc, append ctitle(Model 5) label
+
+We then use the “gen” command to lag the selected explanatory variables by one year, and run the regressions again with the new variables.
+
+gen nasarad_1 = nasarad[_n-1]
+gen nasanonrad_1 = nasanonrad[_n-1]
+gen defrad_1 = defrad[_n-1]
+gen nsfrad_1 = nsfrad[_n-1]
+gen otherrad_1 = otherrad[_n-1]
+regress gdpreal time timesq nasarad nasarad_1 nasanonrad nasanonrad_1 dempres demhouse demsenate sework defrad defrad_1 nsfrad nsfrad_1 otherrad otherrad_1
+outreg2 using myreg1.doc, replace ctitle(Model 1) label
+regress lpaero time timesq nasarad nasarad_1 nasanonrad nasanonrad_1 dempres demhouse demsenate sework defrad defrad_1 nsfrad nsfrad_1 otherrad otherrad_1
+outreg2 using myreg1.doc, append ctitle(Model 2) label
+regress lpair time timesq nasarad nasarad_1 nasanonrad nasanonrad_1 dempres demhouse demsenate sework defrad defrad_1 nsfrad nsfrad_1 otherrad otherrad_1
+outreg2 using myreg1.doc, append ctitle(Model 3) label
+regress lpeng time timesq nasarad nasarad_1 nasanonrad nasanonrad_1 dempres demhouse demsenate sework defrad defrad_1 nsfrad nsfrad_1 otherrad otherrad_1
+outreg2 using myreg1.doc, append ctitle(Model 4) label
+regress nasdaq time timesq nasarad nasarad_1 nasanonrad nasanonrad_1 dempres demhouse demsenate sework defrad defrad_1 nsfrad nsfrad_1 otherrad otherrad_1
+outreg2 using myreg1.doc, append ctitle(Model 5) label
+
+Finally, we repeat the process to lag the explanatory variables by two years, and run the regressions again with all variables incorporated.
+
+gen nasarad_2 = nasarad[_n-2]
+gen nasanonrad_2 = nasanonrad[_n-2]
+gen defrad_2 = defrad[_n-2]
+gen nsfrad_2 = nsfrad[_n-2]
+gen otherrad_2 = otherrad[_n-2]
+regress gdpreal time timesq nasarad nasarad_1 nasarad_2 nasanonrad nasanonrad_1 nasanonrad_2 dempres demhouse demsenate sework defrad defrad_1 defrad_2 nsfrad nsfrad_1 nsfrad_2 otherrad otherrad_1 otherrad_2
+regress lpaero time timesq nasarad nasarad_1 nasarad_2 nasanonrad nasanonrad_1 nasanonrad_2 dempres demhouse demsenate sework defrad defrad_1 defrad_2 nsfrad nsfrad_1 nsfrad_2 otherrad otherrad_1 otherrad_2
+regress lpair time timesq nasarad nasarad_1 nasarad_2 nasanonrad nasanonrad_1 nasanonrad_2 dempres demhouse demsenate sework defrad defrad_1 defrad_2 nsfrad nsfrad_1 nsfrad_2 otherrad otherrad_1 otherrad_2
+regress lpeng time timesq nasarad nasarad_1 nasarad_2 nasanonrad nasanonrad_1 nasanonrad_2 dempres demhouse demsenate sework defrad defrad_1 defrad_2 nsfrad nsfrad_1 nsfrad_2 otherrad otherrad_1 otherrad_2
+regress nasdaq time timesq nasarad nasarad_1 nasarad_2 nasanonrad nasanonrad_1 nasanonrad_2 dempres demhouse demsenate sework defrad defrad_1 defrad_2 nsfrad nsfrad_1 nsfrad_2 otherrad otherrad_1 otherrad_2
