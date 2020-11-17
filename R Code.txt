@@ -1,4 +1,6 @@
-We first load the data from a CSV file and perform the necessary data cleanup and arrangement. For regressions with the LASSO, the vector of response variables and matrix of explanatory variables must be separated. Additionally, since the labor productivity and NASDAQ variables only exist for a limited subset of years, we trim those vectors and matrices accordingly.
+We first load the data from a CSV file and perform the necessary data cleanup and arrangement. 
+For regressions with the LASSO, the vector of response variables and matrix of explanatory variables must be separated. 
+Additionally, since the labor productivity and NASDAQ variables only exist for a limited subset of years, we trim those vectors and matrices accordingly.
 
 data = as.matrix(read.csv("C:/Users/vms784/Desktop/completedata.csv"))
 gdpreal = data[ , 2]
@@ -11,7 +13,10 @@ xgdp = x
 xlp = x[31:59, ]
 xnasdaq = x[13:60, ]
 
-We now install and use the glmnet package to run our initial set of regressions. This package runs regressions with regularization, including LASSO (L1 regularization), ridge (L2 regularization), and elastic net (combined L1 and L2 regularization). As mentioned previously, it was written by a team including R. Tibshirani, the original creator of the LASSO. In our case, the parameter α=1 specifies the use of LASSO regularization.
+We now install and use the glmnet package to run our initial set of regressions. 
+This package runs regressions with regularization, including LASSO (L1), ridge (L2), and elastic net (combined L1 and L2). 
+As mentioned previously, it was written by a team including R. Tibshirani, the original creator of the LASSO. 
+In our case, the parameter α=1 specifies the use of LASSO regularization.
 
 install.packages("glmnet")
 library(glmnet)
@@ -21,7 +26,10 @@ lasso_lpair = glmnet(xlp, lpair, alpha = 1)
 lasso_lpeng = glmnet(xlp, lpeng, alpha = 1)
 lasso_nasdaq = glmnet(xnasdaq, nasdaq, alpha = 1)
 
-In each regression output, the parameter “beta” returns the full sequence of coefficients, while the parameter “dim” returns two values: the number of explanatory variables, and the number of iterations the function went through before converging. We want to see the coefficients for each regression’s final iteration. We therefore call “beta” at the second index of “dim” to obtain the final coefficients in the sequence, and bind them together to view them side-by-side.
+In each regression output, the parameter “beta” returns the full sequence of coefficients.
+The parameter “dim” returns two values: the number of explanatory variables, and the number of iterations required. 
+We want to see the coefficients for each regression’s final iteration. 
+We therefore call “beta” at the second index of “dim” to obtain the final coefficients, and bind them together to view them side-by-side.
 
 coef_gdp = lasso_gdp$beta[ , lasso_gdp$dim[2]]
 coef_lpaero = lasso_lpaero$beta[ , lasso_lpaero$dim[2]]
@@ -31,7 +39,10 @@ coef_nasdaq = lasso_nasdaq$beta[ , lasso_nasdaq$dim[2]]
 cbind(coef_gdp, coef_lpaero, coef_lpair, coef_lpeng, coef_nasdaq)
 
 
-The next and final step is to repeat the process with time-lagged variables. We first install the zoo package, a dataframe management structure that is used to create time-lagged variables. We convert the matrix of explanatory variables into a dataframe, then use the package’s “lag” function with a parameter of -1 to lag each of the selected explanatory variables by one year.
+The final step is to repeat the process with time-lagged variables. 
+We first install the zoo package, a dataframe management structure that is used to create time-lagged variables. 
+We convert the matrix of explanatory variables into a dataframe, then use the package’s “lag” function with a parameter of -1.
+This lags each of the selected explanatory variables by one year.
 
 install.packages(“zoo”)
 library(zoo)
@@ -42,7 +53,8 @@ defrad_1 = lag(xzoo[ , 9], -1, na.pad = TRUE)
 nsfrad_1 = lag(xzoo[ , 10], -1, na.pad = TRUE)
 otherrad_1 = lag(xzoo[ , 11], -1, na.pad = TRUE)
 
-As before, since the labor productivity and NASDAQ variables only exist for a limited subset of years, we trim those matrices accordingly. Additionally, since the LASSO cannot handle missing values, we make the minor adjustment of removing the first year (1958) for the GDP variable.
+As before, since the labor productivity and NASDAQ variables only exist for a limited subset of years, we trim those matrices accordingly. 
+Additionally, since the LASSO cannot handle missing values, we make the minor adjustment of removing the first year (1958) for the GDP variable.
 
 lags = cbind(nasarad_1, nasanonrad_1, defrad_1, nsfrad_1, otherrad_1)
 x_lag = as.matrix(cbind(xzoo, lags))
